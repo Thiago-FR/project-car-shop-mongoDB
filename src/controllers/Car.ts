@@ -41,6 +41,9 @@ export default class CarController extends Controller<Car> {
   ): Promise<typeof res> {
     const { id } = req.params;
     try {
+      if (id.length < 24) {
+        return res.status(400).json({ error: this.errors.minLengthId });
+      }
       const car = await this.service.readOne(id);
       return car
         ? res.json(car)
