@@ -62,11 +62,10 @@ export default class CarController extends Controller<Car> {
       if (id.length < 24) {
         return res.status(400).json({ error: this.errors.minLengthId });
       }
-      const { body } = req;
-      // if (!body) {
-      //   return res.status(400).json({ error: this.errors.minLengthId });
-      // }
-      const car = await this.service.update(id, body);
+      if (!Object.keys(req.body).length) {
+        return res.status(400).json({ error: this.errors.bodyEmpty });
+      }
+      const car = await this.service.update(id, req.body);
       return car
         ? res.json(car)
         : res.status(404).json({ error: this.errors.notFound });
