@@ -9,6 +9,17 @@ export const carOne = {
   "_id": "628e6fd7f5393b1087a936f7",
 }
 
+export const carAll = [{
+  "model": "Test",
+  "year": 1980,
+  "color": "Test",
+  "status": true,
+  "buyValue": 2,
+  "doorsQty": 2,
+  "seatsQty": 2,
+  "_id": "628e6fd7f5393b1087a936f7",
+}]
+
 export const createCar = {
   "model": "Test",
   "year": 1980,

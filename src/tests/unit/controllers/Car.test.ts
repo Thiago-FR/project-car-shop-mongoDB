@@ -6,6 +6,7 @@ import server, { carsModel } from '../../../server';
 
 import { 
   carOne,
+  carAll,
   createCar,
   createCarFaled_1,
   createCarFaled_2,
@@ -30,7 +31,7 @@ describe('Create Car', () => {
     (carsModel.create as sinon.SinonStub).restore();
   })
 
-  it('Test /cars 201', (done) => {
+  it('Test create Car /cars 201', (done) => {
     chai.request(server.app)
         .post('/cars')
         .send(createCar)
@@ -43,7 +44,7 @@ describe('Create Car', () => {
     });
   });
 
-  it('Test /cars 400 "model"', (done) => {
+  it('Test create Car /cars 400 "model"', (done) => {
     chai.request(server.app)
         .post('/cars')
         .send(createCarFaled_1)
@@ -55,7 +56,7 @@ describe('Create Car', () => {
     });
   });
 
-  it('Test /cars 400 "year"', (done) => {
+  it('Test create Car /cars 400 "year"', (done) => {
     chai.request(server.app)
         .post('/cars')
         .send(createCarFaled_2)
@@ -67,7 +68,7 @@ describe('Create Car', () => {
     });
   });
 
-  it('Test /cars 400 "color"', (done) => {
+  it('Test create Car /cars 400 "color"', (done) => {
     chai.request(server.app)
         .post('/cars')
         .send(createCarFaled_3)
@@ -79,7 +80,7 @@ describe('Create Car', () => {
     });
   });
 
-  it('Test /cars 400 "buyValue"', (done) => {
+  it('Test create Car /cars 400 "buyValue"', (done) => {
     chai.request(server.app)
         .post('/cars')
         .send(createCarFaled_5)
@@ -91,7 +92,7 @@ describe('Create Car', () => {
     });
   });
 
-  it('Test /cars 400 "doorsQty"', (done) => {
+  it('Test create Car /cars 400 "doorsQty"', (done) => {
     chai.request(server.app)
         .post('/cars')
         .send(createCarFaled_6)
@@ -103,7 +104,7 @@ describe('Create Car', () => {
     });
   });
 
-  it('Test /cars 400 "seatsQty"', (done) => {
+  it('Test create Car /cars 400 "seatsQty"', (done) => {
     chai.request(server.app)
         .post('/cars')
         .send(createCarFaled_7)
@@ -111,6 +112,53 @@ describe('Create Car', () => {
           expect(res).to.have.status(400);
           expect(res).to.be.json;
           expect(res.body).to.be.a('object');
+          done();
+    });
+  });
+});
+
+
+describe('findAll Car', () => {
+  before(() => {
+    sinon
+      .stub(carsModel, 'read')
+      .resolves(carAll as any);
+  });
+
+  after(()=>{
+    (carsModel.read as sinon.SinonStub).restore();
+  })
+  
+  it('Test findAll Car /cars 200"', (done) => {
+    chai.request(server.app)
+        .get('/cars')
+        .end((_err, res) => {
+          expect(res).to.have.status(200);
+          expect(res).to.be.json;
+          expect(res.text).to.be.equal(JSON.stringify(carAll));
+          done();
+    });
+  });
+});
+
+describe('findOne Car', () => {
+  before(() => {
+    sinon
+      .stub(carsModel, 'readOne')
+      .resolves(carOne as any);
+  });
+
+  after(()=>{
+    (carsModel.readOne as sinon.SinonStub).restore();
+  })
+  
+  it('Test findOne Car /cars 200"', (done) => {
+    chai.request(server.app)
+        .get('/cars/628e6fd7f5393b1087a936f7')
+        .end((_err, res) => {
+          expect(res).to.have.status(200);
+          expect(res).to.be.json;
+          expect(res.text).to.be.equal(JSON.stringify(carOne));
           done();
     });
   });
