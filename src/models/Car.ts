@@ -4,7 +4,7 @@ import MongoModel from './MongoModel';
 
 interface CarDocument extends Car, Document { }
 
-const carSchema = new Schema<CarDocument>({
+export const carSchema = new Schema<CarDocument>({
   model: String,
   year: Number,
   color: String,
@@ -12,7 +12,7 @@ const carSchema = new Schema<CarDocument>({
   buyValue: Number,
   doorsQty: Number,
   seatsQty: Number,
-});
+}, { versionKey: false });
 
 export default class CarModel extends MongoModel<Car> {
   constructor(model = createModel('cars', carSchema)) {
