@@ -2,7 +2,7 @@ import Service, { ServiceError } from '.';
 import vehicleSchema, { Car } from '../interfaces/CarInterface';
 import CarsModel from '../models/Car';
 
-export default class FrameService extends Service<Car> {
+export default class CarService extends Service<Car> {
   constructor(model = new CarsModel()) {
     super(model);
   }
