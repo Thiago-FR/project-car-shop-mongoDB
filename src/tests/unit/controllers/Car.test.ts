@@ -14,6 +14,8 @@ import {
   createCarFaled_5,
   createCarFaled_6,
   createCarFaled_7,
+  update,
+  newUpdate,
 } from '../../mock/Car';
 
 chai.use(chaiHttp);
@@ -212,7 +214,7 @@ describe('findOne Car', () => {
     });
   });
 
-  describe('findOne Error', () => {
+  describe('findOne Error Bad Request', () => {
     before(() => {
       sinon
         .stub(carsModel, 'readOne')
@@ -235,6 +237,29 @@ describe('findOne Car', () => {
     });
   });
 
+  describe('findOne Error Not Found', () => {
+    before(() => {
+      sinon
+        .stub(carService, 'readOne')
+        .resolves(undefined);
+    });
+  
+    after(()=>{
+      (carService.readOne as sinon.SinonStub).restore();
+    })
+    
+    it('findOne Not Found 404', (done) => {
+      chai.request(server.app)
+          .get('/cars/628e6fd7f5393b1087a936f7')
+          .end((_err, res) => {
+            expect(res).to.have.status(404);
+            expect(res).to.be.json;
+            expect(res.text).to.be.includes(JSON.stringify('Object not found'));
+            done();
+      });
+    });
+  });
+
   describe('findOne Error internal', () => {
     before(() => {
       sinon
@@ -249,6 +274,104 @@ describe('findOne Car', () => {
     it('Test findOne Car /cars:id 500"', (done) => {
       chai.request(server.app)
           .get('/cars/628e6fd7f5393b1087a936f7')
+          .end((_err, res) => {
+            expect(res).to.have.status(500);
+            expect(res).to.be.json;
+            expect(res.text).to.be.includes(JSON.stringify('Internal Server Error'));
+            done();
+      });
+    });
+  });
+});
+
+describe('Update Car', () => {
+  describe('Update Success', () => {
+    before(() => {
+      sinon
+        .stub(carsModel, 'update')
+        .resolves(newUpdate as any);
+    });
+  
+    after(()=>{
+      (carsModel.update as sinon.SinonStub).restore();
+    })
+    
+    it('Test update Car /cars:id 200"', (done) => {
+      chai.request(server.app)
+          .put('/cars/628e6fd7f5393b1087a936f7')
+          .send(update)
+          .end((_err, res) => {
+            expect(res).to.have.status(200);
+            expect(res).to.be.json;
+            expect(res.text).to.be.equal(JSON.stringify(newUpdate));
+            done();
+      });
+    });
+  });
+
+  describe('update Error Not Found', () => {
+    before(() => {
+      sinon
+        .stub(carService, 'update')
+        .resolves(undefined);
+    });
+  
+    after(()=>{
+      (carService.update as sinon.SinonStub).restore();
+    })
+    
+    it('update Not Found 404', (done) => {
+      chai.request(server.app)
+          .put('/cars/628e6fd7f5393b1087a936f7')
+          .send(update)
+          .end((_err, res) => {
+            expect(res).to.have.status(404);
+            expect(res).to.be.json;
+            expect(res.text).to.be.includes(JSON.stringify('Object not found'));
+            done();
+      });
+    });
+  });
+
+  describe('Update Error', () => {
+    before(() => {
+      sinon
+        .stub(carsModel, 'update')
+        .rejects(undefined);
+    });
+  
+    after(()=>{
+      (carsModel.update as sinon.SinonStub).restore();
+    })
+
+    it('Test update Car /cars/:id Error min Id 400', (done) => {
+      chai.request(server.app)
+          .put('/cars/628e6fd7f5393b')
+          .send(update)
+          .end((_err, res) => {
+            expect(res).to.have.status(400);
+            expect(res).to.be.json;
+            expect(res.text).to.be.includes(JSON.stringify('Id must have 24 hexadecimal characters'));
+            done();
+      });
+    });
+
+    it('Test update Car /cars/:id Error Body is Empty 400', (done) => {
+      chai.request(server.app)
+          .put('/cars/628e6fd7f5393b1087a936f7')
+          .send()
+          .end((_err, res) => {
+            expect(res).to.have.status(400);
+            expect(res).to.be.json;
+            expect(res.text).to.be.includes(JSON.stringify('Body is Empty'));
+            done();
+      });
+    });
+    
+    it('Test update Car /cars/:id 500', (done) => {
+      chai.request(server.app)
+          .put('/cars/628e6fd7f5393b1087a936f7')
+          .send(update)
           .end((_err, res) => {
             expect(res).to.have.status(500);
             expect(res).to.be.json;

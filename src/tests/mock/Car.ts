@@ -83,3 +83,18 @@ export const createCarFaled_7 = {
   "buyValue": 2,
   "doorsQty": 2
 }
+
+export const update = {
+  "model": "Test2",
+}
+
+export const newUpdate = {
+  "model": "Test2",
+  "year": 1980,
+  "color": "Test",
+  "status": true,
+  "buyValue": 2,
+  "doorsQty": 2,
+  "seatsQty": 2,
+  "_id": "628e6fd7f5393b1087a936f7",
+}
