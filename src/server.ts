@@ -10,7 +10,7 @@ import CarController from './controllers/Car';
 const server = new App();
 
 export const carsModel = new CarsModel(createModel('cars', carSchema));
-const carService = new CarService(carsModel);
+export const carService = new CarService(carsModel);
 export const carController = new CarController(carService);
 
 const carRouter = new CustomRouter<Car>();
