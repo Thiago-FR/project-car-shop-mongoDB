@@ -83,6 +83,10 @@ export default class CarController extends Controller<Car> {
       if (id.length < 24) {
         return res.status(400).json({ error: this.errors.minLengthId });
       }
+      const car = await this.service.readOne(id);
+      if (!car) {
+        return res.status(404).json({ error: this.errors.notFound });
+      }
       await this.service.delete(id);
       return res.status(204).json();
     } catch (error) {
