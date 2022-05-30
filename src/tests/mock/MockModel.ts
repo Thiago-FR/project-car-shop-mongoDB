@@ -17,7 +17,5 @@ export default class MockModel<T> implements Model<T>{
     return obj;
   }
 
-  async delete(id: string): Promise<T | null> {
-    return id as any as T;
-  }
+  async delete(id: string): Promise<void> { return }
 }

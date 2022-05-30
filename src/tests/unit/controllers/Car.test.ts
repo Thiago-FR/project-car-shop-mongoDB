@@ -381,3 +381,141 @@ describe('Update Car', () => {
     });
   });
 });
+
+
+describe('Update Success', () => {
+  before(() => {
+    sinon
+      .stub(carsModel, 'update')
+      .resolves(newUpdate as any);
+  });
+
+  after(()=>{
+    (carsModel.update as sinon.SinonStub).restore();
+  })
+  
+  it('Test update Car /cars:id 200"', (done) => {
+    chai.request(server.app)
+        .put('/cars/628e6fd7f5393b1087a936f7')
+        .send(update)
+        .end((_err, res) => {
+          expect(res).to.have.status(200);
+          expect(res).to.be.json;
+          expect(res.text).to.be.equal(JSON.stringify(newUpdate));
+          done();
+    });
+  });
+});
+
+describe('update Error Not Found', () => {
+  before(() => {
+    sinon
+      .stub(carService, 'update')
+      .resolves(undefined);
+  });
+
+  after(()=>{
+    (carService.update as sinon.SinonStub).restore();
+  })
+  
+  it('update Not Found 404', (done) => {
+    chai.request(server.app)
+        .put('/cars/628e6fd7f5393b1087a936f7')
+        .send(update)
+        .end((_err, res) => {
+          expect(res).to.have.status(404);
+          expect(res).to.be.json;
+          expect(res.text).to.be.includes(JSON.stringify('Object not found'));
+          done();
+    });
+  });
+});
+
+describe('Delete Sucess', () => {
+  beforeEach(() => {
+    sinon
+      .stub(carService, 'readOne')
+      .resolves(carOne);
+    sinon
+      .stub(carsModel, 'delete')
+      .resolves(undefined);    
+  });
+
+  afterEach(()=>{
+    (carService.readOne as sinon.SinonStub).restore();
+    (carsModel.delete as sinon.SinonStub).restore();
+  })
+
+  it('Test delete Car /cars/:id 204', (done) => {
+    chai.request(server.app)
+        .delete('/cars/628e6fd7f5393b1087a936f7')
+        .end((_err, res) => {
+          expect(res).to.have.status(204);
+          // expect(res).to.be.json;
+          done();
+    });
+  });
+});
+
+describe('Delete Error', () => {
+  describe('Erros Resolves', () => {
+    beforeEach(() => {
+      sinon
+        .stub(carService, 'readOne')
+        .resolves(undefined);
+    });
+  
+    afterEach(()=>{
+      (carService.readOne as sinon.SinonStub).restore();
+    })
+
+    it('Test delete Car /cars/:id 400', (done) => {
+      chai.request(server.app)
+          .delete('/cars/123')
+          .end((_err, res) => {
+            expect(res).to.have.status(400);
+            expect(res).to.be.json;
+            expect(res.text).to.be.includes(JSON.stringify('Id must have 24 hexadecimal characters'));
+            done();
+      });
+    });
+  
+    it('Test delete Car /cars/:id 404', (done) => {
+      chai.request(server.app)
+          .delete('/cars/628e6fd7f5393b1087a936f8')
+          .end((_err, res) => {
+            expect(res).to.have.status(404);
+            expect(res).to.be.json;
+            expect(res.text).to.be.includes(JSON.stringify('Object not found'));
+            done();
+      });
+    });
+  });
+
+  describe('Error Reject', () => {
+    beforeEach(() => {
+      sinon
+        .stub(carService, 'readOne')
+        .resolves(carOne);
+      sinon
+        .stub(carsModel, 'delete')
+        .rejects(undefined);
+    });
+  
+    afterEach(()=>{
+      (carService.readOne as sinon.SinonStub).restore();
+      (carsModel.delete as sinon.SinonStub).restore();
+    })
+
+    it('Test delete Reject Car /cars/:id 500', (done) => {
+      chai.request(server.app)
+          .delete('/cars/628e6fd7f5393b1087a936f8')
+          .end((_err, res) => {
+            expect(res).to.have.status(500);
+            expect(res).to.be.json;
+            expect(res.text).to.be.includes(JSON.stringify('Internal Server Error'));
+            done();
+      });
+    });
+  });
+});
