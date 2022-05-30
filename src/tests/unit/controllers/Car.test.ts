@@ -168,24 +168,49 @@ describe('Create Car', () => {
 });
 
 describe('findAll Car', () => {
-  before(() => {
-    sinon
-      .stub(carsModel, 'read')
-      .resolves(carAll as any);
+  describe('findAll Success', () => {
+    before(() => {
+      sinon
+        .stub(carsModel, 'read')
+        .resolves(carAll as any);
+    });
+  
+    after(()=>{
+      (carsModel.read as sinon.SinonStub).restore();
+    })
+    
+    it('Test findAll Car /cars 200"', (done) => {
+      chai.request(server.app)
+          .get('/cars')
+          .end((_err, res) => {
+            expect(res).to.have.status(200);
+            expect(res).to.be.json;
+            expect(res.text).to.be.equal(JSON.stringify(carAll));
+            done();
+      });
+    });
   });
 
-  after(()=>{
-    (carsModel.read as sinon.SinonStub).restore();
-  })
+  describe('findAll Reject', () => {
+    before(() => {
+      sinon
+        .stub(carsModel, 'read')
+        .rejects(undefined);
+    });
   
-  it('Test findAll Car /cars 200"', (done) => {
-    chai.request(server.app)
-        .get('/cars')
-        .end((_err, res) => {
-          expect(res).to.have.status(200);
-          expect(res).to.be.json;
-          expect(res.text).to.be.equal(JSON.stringify(carAll));
-          done();
+    after(()=>{
+      (carsModel.read as sinon.SinonStub).restore();
+    })
+
+    it('Test findAll Reject Car /cars 500"', (done) => {
+      chai.request(server.app)
+          .get('/cars')
+          .end((_err, res) => {
+            expect(res).to.have.status(500);
+            expect(res).to.be.json;
+            expect(res.text).to.be.includes(JSON.stringify('Internal Server Error'));
+            done();
+      });
     });
   });
 });
@@ -309,7 +334,7 @@ describe('Update Car', () => {
     });
   });
 
-  describe('update Error Not Found', () => {
+  describe('Update Error', () => {
     before(() => {
       sinon
         .stub(carService, 'update')
@@ -320,7 +345,7 @@ describe('Update Car', () => {
       (carService.update as sinon.SinonStub).restore();
     })
     
-    it('update Not Found 404', (done) => {
+    it('Update Not Found 404', (done) => {
       chai.request(server.app)
           .put('/cars/628e6fd7f5393b1087a936f7')
           .send(update)
@@ -333,7 +358,7 @@ describe('Update Car', () => {
     });
   });
 
-  describe('Update Error', () => {
+  describe('Update Error 400 minId', () => {
     before(() => {
       sinon
         .stub(carsModel, 'update')
@@ -492,7 +517,7 @@ describe('Delete Error', () => {
     });
   });
 
-  describe('Error Reject', () => {
+  describe('Delete Error Reject Internal Server Error', () => {
     beforeEach(() => {
       sinon
         .stub(carService, 'readOne')
