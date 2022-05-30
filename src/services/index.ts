@@ -24,7 +24,7 @@ abstract class Service<T> {
     return this.model.update(id, obj);
   }
 
-  async delete(id: string): Promise<void | ServiceError> {
+  async delete(id: string): Promise<T | null | ServiceError> {
     return this.model.delete(id);
   }
 }
