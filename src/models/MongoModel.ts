@@ -20,8 +20,8 @@ abstract class MongoModel<T> implements Model<T> {
     return this.model.findByIdAndUpdate(id, obj, { new: true });
   }
 
-  async delete(id: string): Promise<T | null> {
-    return this.model.findByIdAndDelete(id);
+  async delete(id: string): Promise<void> {
+    await this.model.findByIdAndDelete(id);
   }
 }
 
