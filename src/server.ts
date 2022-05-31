@@ -2,26 +2,33 @@ import { model as createModel } from 'mongoose';
 import CustomRouter from './routes/Router';
 import App from './app';
 
-import { Car } from './interfaces/CarInterface';
+import CarValidate, { Car } from './interfaces/CarInterface';
 import CarsModel, { carSchema } from './models/Car';
-import CarService from './services/Car';
-import CarController from './controllers/Car';
-import MotorcycleService from './services/Motorcycle';
-import MotorcycleController from './controllers/Motorcycle';
 import MotorcycleModel, { motorcycleSchema } from './models/Motorcycle';
-import { Motorcycle } from './interfaces/MotorcycleInterface';
+import 
+MotorcycleValidade,
+{ Motorcycle } from './interfaces/MotorcycleInterface';
+import VehicleService from './services/VehicleService';
+import VehicleController from './controllers/VehicleController';
 
 const server = new App();
 
 export const carsModel = new CarsModel(createModel('cars', carSchema));
-export const carService = new CarService(carsModel);
-export const carController = new CarController(carService);
+export const carService = new VehicleService<Car>(
+  carsModel,
+  CarValidate,
+);
+export const carController = new VehicleController<Car>('/cars', carService);
 
 export const motorcyclesModel = new MotorcycleModel(
   createModel('motorcycles', motorcycleSchema),
 );
-export const motorcyclesService = new MotorcycleService(motorcyclesModel);
-export const motorcyclesController = new MotorcycleController(
+export const motorcyclesService = new VehicleService<Motorcycle>(
+  motorcyclesModel,
+  MotorcycleValidade,
+);
+export const motorcyclesController = new VehicleController<Motorcycle>(
+  '/motorcycles',
   motorcyclesService,
 );
 

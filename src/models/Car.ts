@@ -1,4 +1,4 @@
-import { model as createModel, Schema, Document } from 'mongoose';
+import { Model, Schema, Document } from 'mongoose';
 import { Car } from '../interfaces/CarInterface';
 import MongoModel from './MongoModel';
 
@@ -15,7 +15,7 @@ export const carSchema = new Schema<CarDocument>({
 }, { versionKey: false });
 
 export default class CarModel extends MongoModel<Car> {
-  constructor(model = createModel('cars', carSchema)) {
+  constructor(public model: Model<CarDocument>) {
     super(model);
   }
 }
