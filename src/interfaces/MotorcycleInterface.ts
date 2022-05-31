@@ -7,7 +7,7 @@ const MotorcycleSchema = vehicleSchema.extend({
   engineCapacity: z
     .number()
     .int()
-    .gte(0)
+    .gt(0)
     .lte(2500),
 });
 

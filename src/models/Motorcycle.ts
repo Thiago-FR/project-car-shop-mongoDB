@@ -4,7 +4,7 @@ import MongoModel from './MongoModel';
 
 interface MotorcycleDocument extends Motorcycle, Document { }
 
-export const MotorcycleSchema = new Schema<MotorcycleDocument>({
+export const motorcycleSchema = new Schema<MotorcycleDocument>({
   model: String,
   year: Number,
   color: String,
@@ -15,7 +15,7 @@ export const MotorcycleSchema = new Schema<MotorcycleDocument>({
 }, { versionKey: false });
 
 export default class MotorcycleModel extends MongoModel<Motorcycle> {
-  constructor(model = createModel('motorcycles', MotorcycleSchema)) {
+  constructor(model = createModel('motorcycles', motorcycleSchema)) {
     super(model);
   }
 }
