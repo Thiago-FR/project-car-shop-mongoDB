@@ -36,10 +36,10 @@ Nesse projeto foi aplicado os princípios de Programação Orientada a Objetos (
   * Entre na pasta do repositório que você acabou de clonar
 
 1.1 Instale as dependências
-    * `npm install`
+  * `npm install`
 
 1.2 Inicie a API.
-    * `npm start`
+  * `npm start`
 
 ---
 
